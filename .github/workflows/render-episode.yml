@@ -9,7 +9,7 @@ on:
       sections:
         description: 'JSON array of sections to render (trial: ["s0"])'
         required: true
-        default: '["s0","s1","s2","s3","s4","s5","s6","s7","s8"]'
+        default: '["s0","s1","s2","s3","s4","s5","s6","s7"]'
 jobs:
   render-sections:
     runs-on: ubuntu-latest
