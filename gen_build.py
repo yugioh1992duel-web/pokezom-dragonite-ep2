@@ -12,9 +12,10 @@ GOLD = {"600", "700", "145", "dragonite", "mega", "shadow", "giant", "weather", 
 # ---- caption dictionary pass: whisper garbles -> script-canonical spellings ----
 FIX = {'drutini': 'Dratini', 'tretunii': 'Dratini', 'dratini': 'Dratini', 'dragonite': 'Dragonite',
        'terrestrialize': 'Terastallize', 'mailbag': 'mail bag', 'hyperbeams': 'Hyper Beams',
-       'antenna': 'antennae', 'ea': 'Z-A', 'lance': 'Lance', 'mewtwo': 'Mewtwo', "ash's": "Ash's",
-       'bill': 'Bill', 'golden': 'Gold and'}
-MERGE = {('dragon', 'air'): 'Dragonair', ('multi', 'scale'): 'Multiscale',
+       'antenna': 'antennae', 'ea': 'Z-A', 'za': 'Z-A', 'lance': 'Lance', 'mewtwo': 'Mewtwo', "ash's": "Ash's",
+       'bill': 'Bill', 'golden': 'Gold and', 'pokemon': 'Pokémon', 'ash': 'Ash', 'peek': 'peak',
+       '-closed': 'closed', 'metagross': 'Metagross'}
+MERGE = {('dragon', 'air'): 'Dragonair', ('multi', 'scale'): 'Multiscale', ('multi', '-scale'): 'Multiscale',
          ('pseudo', '-legendary'): 'pseudo-legendary'}
 
 def fix_words(ws):
@@ -35,6 +36,21 @@ def fix_words(ws):
         elif low == 'mega' and prv == 'or': cap = 'Mega'
         elif low == 'shadow' and nxt in ('dragonite', 'pokémon', 'pokemon'): cap = 'Shadow'
         elif low == 'silver' and prv == 'golden': cap = 'Silver'
+        if cap:
+            out.append({'w': cap + trail, 's': w['s'], 'e': w['e']}); i += 1; continue
+        if low == 'safari': cap = 'Safari'
+        elif low == 'zone' and prv == 'safari': cap = 'Zone'
+        elif low == 'fan' and nxt == 'spent': cap = 'fans'
+        elif low == 'breaks' and prv in ('-closed', 'closed'): cap = 'brakes'
+        elif low == 'go' and prv in ('pokemon', 'pokémon'): cap = 'GO'
+        elif low == 'legends' and nxt in ('ea', 'z-a', 'za'):
+            out.append({'w': 'Legends:', 's': w['s'], 'e': w['e']}); i += 1; continue
+        elif low == 'in' and nxt == 'next':
+            out.append({'w': 'And', 's': w['s'], 'e': w['e']}); i += 1; continue
+        elif low == 'episode' and prv == 'next':
+            out.append({'w': 'episode:', 's': w['s'], 'e': w['e']}); i += 1; continue
+        elif low == 'metagross' and nxt == 'explained':
+            out.append({'w': 'Metagross,', 's': w['s'], 'e': w['e']}); i += 1; continue
         if cap:
             out.append({'w': cap + trail, 's': w['s'], 'e': w['e']}); i += 1; continue
         if low in FIX:
@@ -126,11 +142,18 @@ def still(img, at, out, label=None, x=70, y=545, w=700, h=330, fit=None):
     if fit: s["fit"] = fit
     return s
 
+def clip(seq, frames, t, dur, label=None, hideHud=False, x=520, y=250, w=880, h=494):
+    c = {"dir": seq, "frames": frames, "at": t, "dur": dur, "mode": "framed"}
+    if label: c["label"] = label
+    c.update({"x": x, "y": y, "w": w, "h": h})
+    if hideHud: c["hideHud"] = True
+    return c
+
 def have(img): return os.path.exists(os.path.join(B, 'assets', img))
 
 orb_x, orb_y = gpos("Dragonair", *DRAGONAIR_ORBS[0]) if DRAGONAIR_ORBS else (1300, 300)
 # pearl gleam anchor = tail tip of the official art (blue-cluster finder only sees the teal eye/back wing)
-pc = (0.905, 0.70)
+pc = (0.16, 0.885)
 pearl_x, pearl_y = gpos("Mega_Dragonite", *pc)
 print("gleam anchors: dragonair orb", (orb_x, orb_y), "| mega pearl", (pearl_x, pearl_y), "from frac", pc)
 
@@ -140,7 +163,7 @@ SEGS = [
       heroes=[hero("Dratini", tin=0.9, tout=6.4, sil=99),
               hero("Dragonair", tin=6.4, tout=10.3, sil=99),
               hero("Dragonite", tin=10.3, tout=15.9, sil=99),
-              dict(art="Dragonite.png", sil="Dragonite_sil.png", x=880, y=-140, size=1420,
+              dict(art="Dragonite.png", sil="Dragonite_giant_sil.png", x=880, y=-55, size=1420,
                    **{"in": 15.9, "out": 20.6, "silUntil": 99, "idle": [17.1, 999]}),
               hero("Shadow_Dragonite", tin=20.6, tout=24.6, sil=99),
               hero("Mega_Dragonite", tin=24.6, tout=29.2, sil=99)],
@@ -170,6 +193,7 @@ SEGS = [
                    moves=[{"kind": "launch", "at": 79.38}])],
       nameBlock={"name": "DRAGONITE", "sub": "THE DRAGON POKÉMON · #149", "pills": ["Dragon", "Flying"], "at": 0.6},
       statAnim={"at": 28.8, "from": 0, "to": 600, "label": "TOTAL STATS", "x": 70, "y": 880, "out": 40.0},
+      clips=[clip("seqLucario", 176, 41.5, 7.3, "POKÉMON JOURNEYS — ASH'S DRAGONITE VS MEGA LUCARIO", hideHud=True)],
       chips=[chip(41.8, "ABILITY: <span class='gold'>MULTISCALE</span> — FIRST HIT CUT IN HALF", 49.5),
              chip(47.8, "<span class='gold'>TERA NORMAL</span> + EXTREME SPEED", 54.5),
              chip(59.0, "<span class='gold'>3 DRAGONITE</span> — TWO AT LEVEL 47", 65.5, y=892),
@@ -185,7 +209,8 @@ SEGS = [
                    **{"in": 0.4, "silUntil": 99, "idle": [1.6, 999],
                       "moves": [{"kind": "loom", "at": 1.0, "dur": 40}]})],
       nameBlock={"name": "GIANT DRAGONITE", "sub": "MYSTERY AT THE LIGHTHOUSE · ANIME EP. 13", "pills": ["Dragon", "Flying"], "at": 0.5},
-      stills=[still("still_giant.png", 6.0, 24.0, None, w=533, h=400, y=625)],
+      clips=[clip("seqGiant", 168, 6.0, 7.0, "MYSTERY AT THE LIGHTHOUSE (1997)", x=70, y=645, w=465, h=349)],
+      stills=[still("still_giant.png", 13.8, 24.0, None, w=533, h=400, y=625)],
       chips=[chip(26.5, "SIZE: <span class='gold'>UNMEASURED</span>", 33.0, y=892)],
       headlines=[hl(34.5, "DYNAMAX... BEFORE<br/><span class='gold'>DYNAMAX?</span>", 41.5, y=690)]),
  dict(id='s5', start=323.26, dur=43.08, types=["Dragon", "Flying"], formLabel="FORM 5 OF 6", mood="shadow",
@@ -200,6 +225,7 @@ SEGS = [
       heroes=[hero("Mega_Dragonite", punch=8.1)],
       nameBlock={"name": "MEGA DRAGONITE", "sub": "MEGA EVOLUTION · LEGENDS: Z-A (2025)", "pills": ["Dragon", "Flying"], "at": 0.6},
       gleams=[{"x": pearl_x, "y": pearl_y, "at": 24.9, "size": 170, "color": "#8ef7ff", "n": 2}],
+      clips=[clip("seqMega", 144, 26.0, 6.0, "POKÉMON HORIZONS — MEGA DRAGONITE", hideHud=True)],
       statAnim={"at": 32.8, "from": 600, "to": 700, "label": "TOTAL STATS", "x": 70, "y": 880, "out": 36.8},
       chips=[chip(37.0, "ATTACK <span class='red'>−10</span>", 42.5, y=892),
              chip(39.6, "SP. ATK <span class='gold'>+45 → 145</span>", 45.0, y=800),
@@ -228,10 +254,16 @@ for cfg in SEGS:
     open(os.path.join(d, 'index.html'), 'w').write(html)
     json.dump({"$schema": "https://hyperframes.heygen.com/schema/hyperframes.json", "registry": "https://raw.githubusercontent.com/heygen-com/hyperframes/main/registry", "paths": {"blocks": "compositions", "components": "compositions/components", "assets": "assets"}}, open(os.path.join(d, 'hyperframes.json'), 'w'), indent=2)
     arts = [h['art'][:-4] for h in cfg.get('heroes', [])] + [s['art'][:-4] for s in cfg.get('ranking', {}).get('slots', [])]
+    for h in cfg.get('heroes', []):
+        if h.get('sil'):
+            _sp = os.path.join(B, 'assets', h['sil'])
+            if os.path.exists(_sp): shutil.copy(_sp, os.path.join(d, 'assets', h['sil']))
     for a in set(arts):
         for suf in ('.png', '_sil.png', '_white.png'):
             src = os.path.join(B, 'assets', a + suf)
             if os.path.exists(src): shutil.copy(src, os.path.join(d, 'assets', a + suf))
+    for c in cfg.get('clips', []):
+        shutil.copytree(os.path.join(B, 'assets', c['dir']), os.path.join(d, 'assets', c['dir']), dirs_exist_ok=True)
     for st in cfg.get('stills', []):
         src = os.path.join(B, 'assets', st['img'])
         if os.path.exists(src): shutil.copy(src, os.path.join(d, 'assets', st['img']))
@@ -242,4 +274,4 @@ for cfg in SEGS:
         else: print('MISSING HABITAT:', cfg['id'], cfg['habitat']['img'])
     shutil.copy('/home/hatch/workspace/pokezom_tristorm_build/hf/assets/gsap.min.js', os.path.join(d, 'assets', 'gsap.min.js'))
     print(cfg['id'], 'ok, caps', len(cfg['captions']))
-print('ALL SEGMENTS BUILT (Ep.2 v1)')
+print('ALL SEGMENTS BUILT (Ep.2 v2)')
