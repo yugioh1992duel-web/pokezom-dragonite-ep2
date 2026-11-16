@@ -122,12 +122,12 @@
   /* quote card */
   #loadBar { position:absolute; left:70px; top:878px; width:560px; height:24px; border:2px solid rgba(255,255,255,.4); border-radius:12px; background:rgba(8,12,20,.55); opacity:0; z-index:37; overflow:hidden; }
   #loadFill { height:100%; width:100%; transform-origin:left center; transform:scaleX(0); background:linear-gradient(90deg,#ffd94d,#ff7a1a); }
-  #quoteCard { position:absolute; left:70px; top:545px; width:1010px; z-index:36; opacity:0; background:rgba(10,16,14,.88); border:2px solid rgba(120,255,170,.35);
-    border-radius:24px; padding:44px 54px; box-shadow:0 30px 80px rgba(0,0,0,.65); }
-  #quoteHead { display:inline-block; padding:8px 20px; border-radius:8px; background:#1d3a2a;
-    color:#8dffa8; font-weight:800; font-size:23px; letter-spacing:3px; margin-bottom:22px; }
-  #quoteText { color:#eafff0; font-size:44px; font-weight:700; line-height:1.35; }
-  #quoteSrc { margin-top:20px; color:rgba(255,255,255,.55); font-size:24px; font-weight:600; letter-spacing:1px; }
+  #quoteCard { position:absolute; left:70px; top:562px; width:1010px; z-index:36; opacity:0; background:rgba(10,16,14,.88); border:2px solid rgba(120,255,170,.35);
+    border-radius:24px; padding:30px 40px; box-shadow:0 30px 80px rgba(0,0,0,.65); }
+  #quoteHead { display:inline-block; padding:6px 16px; border-radius:8px; background:#1d3a2a;
+    color:#8dffa8; font-weight:800; font-size:20px; letter-spacing:3px; margin-bottom:14px; }
+  #quoteText { color:#eafff0; font-size:34px; font-weight:700; line-height:1.3; }
+  #quoteSrc { margin-top:12px; color:rgba(255,255,255,.55); font-size:20px; font-weight:600; letter-spacing:1px; }
   /* clip stacks */
   .clipFull { position:absolute; inset:0; z-index:20; opacity:0; }
   .clipFull img, .clipFramed img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; }
@@ -691,6 +691,10 @@ if (C.loadBar) {
 if (C.quoteCard) {
   tl.fromTo('#quoteCard', { opacity: 0, scale: .92 }, { opacity: 1, scale: 1, duration: .45, ease: 'back.out(1.5)' }, C.quoteCard.at);
   tl.to('#quoteCard', { opacity: 0, duration: .4 }, C.quoteCard.out);
+  if (C.quoteCard.hideName) {
+    tl.to('#nameBlock', { opacity: 0, duration: .3 }, C.quoteCard.at - .35);
+    tl.to('#nameBlock', { opacity: 1, duration: .35 }, C.quoteCard.out + .45);
+  }
 }
 if (C.titleCard) {
   tl.fromTo('#titleCard', { opacity: 0, scale: .94 }, { opacity: 1, scale: 1, duration: .5, ease: 'back.out(1.4)' }, C.titleCard.at);
@@ -717,21 +721,21 @@ if (C.statAnim) {
        Scoped per hero: only heroes whose window overlaps the clip hide/restore.
        A blanket restore resurrects heroes that have not entered yet (s0 hook bug:
        Iron Thorns + Mega plates forced visible during Pupitar's window). */
-    tl.to('#nameBlock', { opacity: 0, duration: .3 }, cl.at);
+    tl.to('#nameBlock', { opacity: 0, duration: .3 }, cl.at - .35);
     const affected = (C.heroes || []).map((h, hi) => ({ h, hi })).filter(({ h }) => h.in < cl.at + cl.dur && (h.out ?? DUR) > cl.at);
     affected.forEach(({ hi }) => {
-      ['#hero' + hi, '#glow' + hi, '#pool' + hi].forEach(sel => tl.to(sel, { opacity: 0, duration: .3 }, cl.at));
+      ['#hero' + hi, '#glow' + hi, '#pool' + hi].forEach(sel => tl.to(sel, { opacity: 0, duration: .3 }, cl.at - .35));
     });
-    tl.to('#nameBlock', { opacity: 1, duration: .35 }, cl.at + cl.dur + .05);
+    tl.to('#nameBlock', { opacity: 1, duration: .35 }, cl.at + cl.dur + .4);
     affected.forEach(({ h, hi }) => {
       if (h.in > cl.at && h.in < cl.at + cl.dur) {
         tl.to('#hero' + hi, { opacity: 0, duration: .05, overwrite: 'auto' }, h.in + .02);
         tl.to('#glow' + hi, { opacity: 0, duration: .05, overwrite: 'auto' }, h.in + .12);
       }
       if ((h.out ?? DUR) > cl.at + cl.dur) {
-        tl.to('#hero' + hi, { opacity: 1, duration: .35 }, cl.at + cl.dur + .05);
-        tl.to('#glow' + hi, { opacity: .85, duration: .35 }, cl.at + cl.dur + .05);
-        tl.to('#pool' + hi, { opacity: 1, duration: .35 }, cl.at + cl.dur + .05);
+        tl.to('#hero' + hi, { opacity: 1, duration: .35 }, cl.at + cl.dur + .4);
+        tl.to('#glow' + hi, { opacity: .85, duration: .35 }, cl.at + cl.dur + .4);
+        tl.to('#pool' + hi, { opacity: 1, duration: .35 }, cl.at + cl.dur + .4);
       }
     });
   }

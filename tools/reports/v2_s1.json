@@ -1,0 +1,15 @@
+{
+  "tool": "collision_lint.mjs",
+  "version": 1,
+  "comp": "s1/index.html",
+  "html": "/home/hatch/workspace/pokezom_dragonite_build/segments/s1/index.html",
+  "generatedAt": "2026-11-16T18:32:31.063Z",
+  "mode": "check-only",
+  "durationS": 60.72,
+  "timelineDurationS": 67.2,
+  "samples": 1345,
+  "samplesWithCollisions": 0,
+  "collisionGroups": 0,
+  "collisions": [],
+  "pageErrors": []
+}
