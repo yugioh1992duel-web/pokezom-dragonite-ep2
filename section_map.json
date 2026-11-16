@@ -1,0 +1,58 @@
+{
+ "anchors": {
+  "s0_hook": 0.0,
+  "s1_dratini": 37.98,
+  "s2_dragonair": 98.7,
+  "s3_dragonite": 168.46,
+  "s4_giant": 278.6,
+  "s5_shadow": 323.26,
+  "s6_mega": 366.34,
+  "s7_ranking": 438.84,
+  "end": 518.58
+ },
+ "sections": {
+  "s0_hook": {
+   "start": 0.0,
+   "dur": 37.98
+  },
+  "s1_dratini": {
+   "start": 37.98,
+   "dur": 60.72
+  },
+  "s2_dragonair": {
+   "start": 98.7,
+   "dur": 69.76
+  },
+  "s3_dragonite": {
+   "start": 168.46,
+   "dur": 110.14
+  },
+  "s4_giant": {
+   "start": 278.6,
+   "dur": 44.66
+  },
+  "s5_shadow": {
+   "start": 323.26,
+   "dur": 43.08
+  },
+  "s6_mega": {
+   "start": 366.34,
+   "dur": 72.5
+  },
+  "s7_ranking": {
+   "start": 438.84,
+   "dur": 79.74
+  }
+ },
+ "beats": {
+  "riff": [
+   116.46,
+   127.98
+  ],
+  "multiscale_line": 210.88,
+  "sixteen_hours": 247.84,
+  "quote2_cue": 421.04,
+  "vote_cta": 501.58,
+  "metagross_tease": 513.18
+ }
+}

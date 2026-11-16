@@ -1,0 +1,9 @@
+segments/*/renders/
+segments/*/.hyperframes/
+segments/*/render.log
+audio/*.wav
+src/
+gh_downloads/
+*.mp4
+*.npy
+__pycache__/
